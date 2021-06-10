@@ -1,7 +1,9 @@
 package worldofbooks.listingreportingsystem.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
@@ -20,4 +22,6 @@ public class Listing {
     private String ownerEmailAddress;
     private Date uploadTime;
 
+    @OneToOne(cascade = {CascadeType.ALL})
+    private Location inventoryItemLocationId;
 }
