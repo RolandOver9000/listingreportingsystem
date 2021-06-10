@@ -1,4 +1,4 @@
-package worldofbooks.listingreportingsystem.model;
+package worldofbooks.listingreportingsystem.model.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

@@ -1,4 +1,4 @@
-package worldofbooks.listingreportingsystem.model;
+package worldofbooks.listingreportingsystem.model.entity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -24,4 +24,8 @@ public class Listing {
 
     @OneToOne(cascade = {CascadeType.ALL})
     private Location inventoryItemLocationId;
+
+    @OneToOne(cascade = {CascadeType.ALL})
+    private ListingStatus listingStatus;
+
 }
