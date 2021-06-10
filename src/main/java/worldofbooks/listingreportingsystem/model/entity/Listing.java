@@ -28,4 +28,6 @@ public class Listing {
     @OneToOne(cascade = {CascadeType.ALL})
     private ListingStatus listingStatus;
 
+    @OneToOne(cascade = {CascadeType.ALL})
+    private Marketplace marketplace;
 }
