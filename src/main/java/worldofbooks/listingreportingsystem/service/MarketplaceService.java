@@ -9,7 +9,8 @@ import java.util.List;
 
 public class MarketplaceService {
 
-    private static final String MARKETPLACE_ENDPOINT_URL = "https://my.api.mockaroo.com/marketplace?key=63304c70";
+    private static final String MOCKAROO_API_KEY = System.getenv("MOCKAROO_API_KEY");
+    private static final String MARKETPLACE_ENDPOINT_URL = "https://my.api.mockaroo.com/marketplace?key=" + MOCKAROO_API_KEY;
     private HttpRequestService httpRequestService;
     private MarketplaceRepository marketplaceRepository;
     private List<Marketplace> fetchedMarketplaces;

@@ -10,7 +10,8 @@ import java.util.UUID;
 
 public class LocationService {
 
-    private static final String LOCATION_ENDPOINT_URL = "https://my.api.mockaroo.com/location?key=63304c70";
+    private static final String MOCKAROO_API_KEY = System.getenv("MOCKAROO_API_KEY");
+    private static final String LOCATION_ENDPOINT_URL = "https://my.api.mockaroo.com/location?key=" + MOCKAROO_API_KEY;
     private HttpRequestService httpRequestService;
     private LocationRepository locationRepository;
     private List<Location> fetchedLocations;

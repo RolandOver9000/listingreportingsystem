@@ -9,7 +9,8 @@ import java.util.List;
 
 public class ListingStatusService {
 
-    private static final String LISTING_STATUS_ENDPOINT_URL = "https://my.api.mockaroo.com/listingStatus?key=63304c70";
+    private static final String MOCKAROO_API_KEY = System.getenv("MOCKAROO_API_KEY");
+    private static final String LISTING_STATUS_ENDPOINT_URL = "https://my.api.mockaroo.com/listingStatus?key=" + MOCKAROO_API_KEY;
     private HttpRequestService httpRequestService;
     private ListingStatusRepository listingStatusRepository;
     private List<ListingStatus> fetchedListingStatuses;
