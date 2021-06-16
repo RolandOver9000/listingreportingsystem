@@ -15,8 +15,10 @@ public class ListingStatusDAODB implements ListingStatusRepository {
 
     @Override
     public void saveListingStatus(ListingStatus newListingStatus) {
+        entityManager.getTransaction().begin();
         entityManager.persist(newListingStatus);
         System.out.println(entityManager.find(ListingStatus.class, newListingStatus.getId()).toString());
+        entityManager.getTransaction().commit();
     }
 
     public void setEntityManager(EntityManager entityManager) {

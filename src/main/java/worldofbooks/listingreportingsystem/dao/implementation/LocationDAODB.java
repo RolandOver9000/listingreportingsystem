@@ -15,8 +15,10 @@ public class LocationDAODB implements LocationRepository {
 
     @Override
     public void saveLocation(Location newLocation) {
+        entityManager.getTransaction().begin();
         entityManager.persist(newLocation);
         System.out.println(entityManager.find(Location.class, newLocation.getId()).toString());
+        entityManager.getTransaction().commit();
     }
 
     public void setEntityManager(EntityManager entityManager) {

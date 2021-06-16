@@ -16,8 +16,10 @@ public class MarketplaceDAODB implements MarketplaceRepository {
 
     @Override
     public void saveMarketplace(Marketplace newMarketplace) {
+        entityManager.getTransaction().begin();
         entityManager.persist(newMarketplace);
         System.out.println(entityManager.find(Marketplace.class, newMarketplace.getId()).toString());
+        entityManager.getTransaction().commit();
     }
 
     public void setEntityManager(EntityManager entityManager) {
