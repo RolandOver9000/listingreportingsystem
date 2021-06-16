@@ -13,9 +13,9 @@ public class ListingReportingSystem {
         HttpRequestService httpRequestService = new HttpRequestService();
         DataHandlerService dataHandlerService = new DataHandlerService(httpRequestService, entityManager);
 
-        dataHandlerService.handleDataFetching();
-        dataHandlerService.handleDataSaving();
+        dataHandlerService.fetchAndSaveData();
 
+        entityManager.close();
         JPAUtil.shutdown();
     }
 }
