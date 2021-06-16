@@ -14,27 +14,28 @@ public class HttpRequestService {
 
     private final CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    public void sendGetRequest(String targetUrl) {
+    public String sendGetRequest(String targetUrl) {
         HttpGet request = new HttpGet(targetUrl);
-
         System.out.println(request.toString());
+
         try (CloseableHttpResponse response = httpClient.execute(request)) {
 
             // Get HttpResponse Status
             System.out.println(response.getStatusLine().toString());
 
-            HttpEntity entity = response.getEntity();
-            Header headers = entity.getContentType();
+            HttpEntity responseEntity = response.getEntity();
+            Header headers = responseEntity.getContentType();
             System.out.println(headers);
 
-            if (entity != null) {
+            if (responseEntity != null) {
                 // return it as a String
-                String result = EntityUtils.toString(entity);
-                System.out.println(result);
+                return EntityUtils.toString(responseEntity);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 }
