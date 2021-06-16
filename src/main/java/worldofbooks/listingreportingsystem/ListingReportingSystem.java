@@ -1,22 +1,20 @@
 package worldofbooks.listingreportingsystem;
 
+import worldofbooks.listingreportingsystem.service.*;
 import worldofbooks.listingreportingsystem.util.JPAUtil;
 
 import javax.persistence.EntityManager;
 
 public class ListingReportingSystem {
+
+
     public static void main(String[] args) {
         EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        entityManager.getTransaction().begin();
+        HttpRequestService httpRequestService = new HttpRequestService();
+        DataHandlerService dataHandlerService = new DataHandlerService(httpRequestService, entityManager);
 
-        // Check database version
-        String sql = "select version()";
-
-        String result = (String) entityManager.createNativeQuery(sql).getSingleResult();
-        System.out.println(result);
-
-        entityManager.getTransaction().commit();
-        entityManager.close();
+        dataHandlerService.handleDataFetching();
+        dataHandlerService.handleDataSaving();
 
         JPAUtil.shutdown();
     }
