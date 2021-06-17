@@ -11,7 +11,6 @@ import java.util.Date;
 public class StringConverterUtil {
 
     public static <T> T convertJsonStringToGivenType(String givenString, TypeReference<T> targetClass) {
-        System.out.println(givenString);
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(givenString, targetClass);
