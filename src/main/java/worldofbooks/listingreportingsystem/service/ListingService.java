@@ -1,6 +1,7 @@
 package worldofbooks.listingreportingsystem.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import worldofbooks.listingreportingsystem.dao.externalapi.ListingAPIDAO;
 import worldofbooks.listingreportingsystem.dao.repository.ListingRepository;
 import worldofbooks.listingreportingsystem.model.dto.ListingIncomingDTO;
 import worldofbooks.listingreportingsystem.model.entity.Listing;
@@ -12,9 +13,6 @@ import java.util.List;
 
 public class ListingService {
 
-    private static final String MOCKAROO_API_KEY = System.getenv("MOCKAROO_API_KEY");
-    private static final String LISTING_ENDPOINT_URL = "https://my.api.mockaroo.com/listing?key=" + MOCKAROO_API_KEY;
-    private HttpRequestService httpRequestService;
     private ListingRepository listingRepository;
     private List<ListingIncomingDTO> fetchedListings;
     private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -22,31 +20,28 @@ public class ListingService {
     private ListingStatusService listingStatusService;
     private MarketplaceService marketplaceService;
     private ListingValidationService listingValidationService;
+    private ListingAPIDAO listingAPIDAO;
 
-    public ListingService(HttpRequestService newHttpRequestService,
-                          ListingRepository newListingRepository,
+    public ListingService(ListingRepository newListingRepository,
                           LocationService newLocationService,
                           ListingStatusService newListingStatusService,
                           MarketplaceService newMarketplaceService,
-                          ListingValidationService newListingValidationService) {
+                          ListingValidationService newListingValidationService,
+                          ListingAPIDAO newListingAPIDAO) {
 
-        this.setHttpRequestService(newHttpRequestService);
         this.setListingRepository(newListingRepository);
         this.setLocationService(newLocationService);
         this.setListingStatusService(newListingStatusService);
         this.setMarketplaceService(newMarketplaceService);
         this.setListingValidationService(newListingValidationService);
+        this.setListingAPIDAO(newListingAPIDAO);
     }
 
     public void fetchAndSaveValidData() {
-        String fetchedListingData = this.fetchListingData();
+        String fetchedListingData = this.listingAPIDAO.fetchData();
         this.setFetchedListings(this.getListingListFromJson(fetchedListingData));
-        this.setFetchedListings(this.listingValidationService.validateIncomingListings(this.fetchedListings));
+        this.setFetchedListings(this.listingValidationService.getValidatedIncomingListings(this.fetchedListings));
         this.saveListingListElementsFromFetchedData();
-    }
-
-    public String fetchListingData() {
-        return this.httpRequestService.sendGetRequest(LISTING_ENDPOINT_URL);
     }
 
     public List<ListingIncomingDTO> getListingListFromJson(String json) {
@@ -78,10 +73,6 @@ public class ListingService {
         }
     }
 
-    public void setHttpRequestService(HttpRequestService httpRequestService) {
-        this.httpRequestService = httpRequestService;
-    }
-
     public void setListingRepository(ListingRepository listingRepository) {
         this.listingRepository = listingRepository;
     }
@@ -104,5 +95,9 @@ public class ListingService {
 
     public void setListingValidationService(ListingValidationService listingValidationService) {
         this.listingValidationService = listingValidationService;
+    }
+
+    public void setListingAPIDAO(ListingAPIDAO listingAPIDAO) {
+        this.listingAPIDAO = listingAPIDAO;
     }
 }

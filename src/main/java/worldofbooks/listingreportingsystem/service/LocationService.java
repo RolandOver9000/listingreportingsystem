@@ -1,6 +1,7 @@
 package worldofbooks.listingreportingsystem.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import worldofbooks.listingreportingsystem.dao.externalapi.LocationAPIDAO;
 import worldofbooks.listingreportingsystem.dao.repository.LocationRepository;
 import worldofbooks.listingreportingsystem.model.entity.Location;
 import worldofbooks.listingreportingsystem.util.StringConverterUtil;
@@ -10,27 +11,20 @@ import java.util.UUID;
 
 public class LocationService {
 
-    private static final String MOCKAROO_API_KEY = System.getenv("MOCKAROO_API_KEY");
-    private static final String LOCATION_ENDPOINT_URL = "https://my.api.mockaroo.com/location?key=" + MOCKAROO_API_KEY;
-    private HttpRequestService httpRequestService;
     private LocationRepository locationRepository;
     private List<Location> fetchedLocations;
+    private LocationAPIDAO locationAPIDAO;
 
-    public LocationService(HttpRequestService newHttpRequestService,
-                           LocationRepository newLocationRepository) {
-
-        this.setHttpRequestService(newHttpRequestService);
+    public LocationService(LocationRepository newLocationRepository,
+                           LocationAPIDAO newLocationAPIDAO) {
+        this.setLocationAPIDAO(newLocationAPIDAO);
         this.setLocationRepository(newLocationRepository);
     }
 
     public void fetchAndSaveData() {
-        String fetchedLocationData = this.fetchLocationData();
+        String fetchedLocationData = this.locationAPIDAO.fetchData();
         this.setFetchedLocations(this.getLocationListFromJson(fetchedLocationData));
         this.saveLocationListElements(this.getFetchedLocations());
-    }
-
-    public String fetchLocationData() {
-        return this.httpRequestService.sendGetRequest(LOCATION_ENDPOINT_URL);
     }
 
     public List<Location> getLocationListFromJson(String json) {
@@ -52,10 +46,6 @@ public class LocationService {
                 .orElse(null);
     }
 
-    public void setHttpRequestService(HttpRequestService httpRequestService) {
-        this.httpRequestService = httpRequestService;
-    }
-
     public void setLocationRepository(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
     }
@@ -66,5 +56,9 @@ public class LocationService {
 
     public List<Location> getFetchedLocations() {
         return fetchedLocations;
+    }
+
+    public void setLocationAPIDAO(LocationAPIDAO locationAPIDAO) {
+        this.locationAPIDAO = locationAPIDAO;
     }
 }

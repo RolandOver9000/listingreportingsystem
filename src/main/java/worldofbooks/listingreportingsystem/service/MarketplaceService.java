@@ -1,6 +1,7 @@
 package worldofbooks.listingreportingsystem.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import worldofbooks.listingreportingsystem.dao.externalapi.MarketplaceAPIDTO;
 import worldofbooks.listingreportingsystem.dao.repository.MarketplaceRepository;
 import worldofbooks.listingreportingsystem.model.entity.Marketplace;
 import worldofbooks.listingreportingsystem.util.StringConverterUtil;
@@ -9,27 +10,21 @@ import java.util.List;
 
 public class MarketplaceService {
 
-    private static final String MOCKAROO_API_KEY = System.getenv("MOCKAROO_API_KEY");
-    private static final String MARKETPLACE_ENDPOINT_URL = "https://my.api.mockaroo.com/marketplace?key=" + MOCKAROO_API_KEY;
-    private HttpRequestService httpRequestService;
     private MarketplaceRepository marketplaceRepository;
     private List<Marketplace> fetchedMarketplaces;
+    private MarketplaceAPIDTO marketplaceAPIDTO;
 
-    public MarketplaceService(HttpRequestService newHttpRequestService,
-                              MarketplaceRepository newMarketplaceRepository) {
+    public MarketplaceService(MarketplaceRepository newMarketplaceRepository,
+                              MarketplaceAPIDTO newMarketplaceAPIDTO) {
 
-        this.setHttpRequestService(newHttpRequestService);
         this.setMarketplaceRepository(newMarketplaceRepository);
+        this.setMarketplaceAPIDTO(newMarketplaceAPIDTO);
     }
 
     public void fetchAndSaveData() {
-        String fetchMarketplaceData = this.fetchMarketplaceData();
+        String fetchMarketplaceData = this.marketplaceAPIDTO.fetchData();
         this.setFetchedMarketplaces(this.getMarketplaceListFromJson(fetchMarketplaceData));
         this.saveMarketplaceListElements(this.getFetchedMarketplaces());
-    }
-
-    public String fetchMarketplaceData() {
-        return this.httpRequestService.sendGetRequest(MARKETPLACE_ENDPOINT_URL);
     }
 
     public List<Marketplace> getMarketplaceListFromJson(String json) {
@@ -51,10 +46,6 @@ public class MarketplaceService {
                 .orElse(null);
     }
 
-    public void setHttpRequestService(HttpRequestService httpRequestService) {
-        this.httpRequestService = httpRequestService;
-    }
-
     public void setMarketplaceRepository(MarketplaceRepository marketplaceRepository) {
         this.marketplaceRepository = marketplaceRepository;
     }
@@ -65,5 +56,9 @@ public class MarketplaceService {
 
     public List<Marketplace> getFetchedMarketplaces() {
         return fetchedMarketplaces;
+    }
+
+    public void setMarketplaceAPIDTO(MarketplaceAPIDTO marketplaceAPIDTO) {
+        this.marketplaceAPIDTO = marketplaceAPIDTO;
     }
 }
