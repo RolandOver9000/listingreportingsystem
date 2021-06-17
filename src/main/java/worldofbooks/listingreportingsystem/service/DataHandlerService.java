@@ -4,6 +4,7 @@ import worldofbooks.listingreportingsystem.dao.implementation.ListingDAODB;
 import worldofbooks.listingreportingsystem.dao.implementation.ListingStatusDAODB;
 import worldofbooks.listingreportingsystem.dao.implementation.LocationDAODB;
 import worldofbooks.listingreportingsystem.dao.implementation.MarketplaceDAODB;
+import worldofbooks.listingreportingsystem.service.validation.ListingValidationService;
 
 import javax.persistence.EntityManager;
 
@@ -14,6 +15,7 @@ public class DataHandlerService {
     private ListingStatusService listingStatusService;
     private LocationService locationService;
     private MarketplaceService marketplaceService;
+    private ListingValidationService listingValidationService;
 
     public DataHandlerService(HttpRequestService newHttpRequestService, EntityManager newEntityManager) {
         this.setHttpRequestService(newHttpRequestService);
@@ -29,19 +31,24 @@ public class DataHandlerService {
         this.setMarketplaceService(new MarketplaceService(httpRequestService, new MarketplaceDAODB(entityManager)));
         this.setLocationService(new LocationService(httpRequestService, new LocationDAODB(entityManager)));
         this.setListingStatusService(new ListingStatusService(httpRequestService, new ListingStatusDAODB(entityManager)));
+        this.setListingValidationService(new ListingValidationService(this.marketplaceService,
+                this.locationService,
+                this.listingStatusService));
+
         this.setListingService(new ListingService(
                 httpRequestService,
                 new ListingDAODB(entityManager),
                 locationService,
                 listingStatusService,
-                marketplaceService));
+                marketplaceService,
+                listingValidationService));
     }
 
     private void startFetchAndSaveBySubServices() {
         listingStatusService.fetchAndSaveData();
         locationService.fetchAndSaveData();
         marketplaceService.fetchAndSaveData();
-        listingService.fetchAndSaveData();
+        listingService.fetchAndSaveValidData();
     }
 
     public void setHttpRequestService(HttpRequestService httpRequestService) {
@@ -66,5 +73,9 @@ public class DataHandlerService {
 
     public void setMarketplaceService(MarketplaceService marketplaceService) {
         this.marketplaceService = marketplaceService;
+    }
+
+    public void setListingValidationService(ListingValidationService listingValidationService) {
+        this.listingValidationService = listingValidationService;
     }
 }
