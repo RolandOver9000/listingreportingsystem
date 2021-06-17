@@ -31,9 +31,9 @@ public class ListingValidationService {
         this.setListingStatusService(newListingStatusService);
     }
 
-    public List<ListingIncomingDTO> validateIncomingListings(List<ListingIncomingDTO> incomingListings) {
+    public List<ListingIncomingDTO> getValidatedIncomingListings(List<ListingIncomingDTO> incomingListings) {
         this.startValidateListings(incomingListings);
-        this.saveInvalidFieldsToLogFile();
+        this.saveInvalidListingsToLogFile();
         return this.validListings;
     }
 
@@ -86,7 +86,7 @@ public class ListingValidationService {
     }
 
 
-    private void saveInvalidFieldsToLogFile() {
+    private void saveInvalidListingsToLogFile() {
         FileHandler.writeToListingValidationLogFile(this.invalidListings);
     }
 

@@ -1,4 +1,4 @@
-package worldofbooks.listingreportingsystem.service;
+package worldofbooks.listingreportingsystem.util;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -10,7 +10,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
-public class HttpRequestService {
+public class HttpRequestUtil {
 
     private final CloseableHttpClient httpClient = HttpClients.createDefault();
 

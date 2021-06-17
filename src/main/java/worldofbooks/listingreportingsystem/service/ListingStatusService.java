@@ -1,6 +1,7 @@
 package worldofbooks.listingreportingsystem.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import worldofbooks.listingreportingsystem.dao.externalapi.ListingStatusAPIDAO;
 import worldofbooks.listingreportingsystem.dao.repository.ListingStatusRepository;
 import worldofbooks.listingreportingsystem.model.entity.ListingStatus;
 import worldofbooks.listingreportingsystem.util.StringConverterUtil;
@@ -9,27 +10,21 @@ import java.util.List;
 
 public class ListingStatusService {
 
-    private static final String MOCKAROO_API_KEY = System.getenv("MOCKAROO_API_KEY");
-    private static final String LISTING_STATUS_ENDPOINT_URL = "https://my.api.mockaroo.com/listingStatus?key=" + MOCKAROO_API_KEY;
-    private HttpRequestService httpRequestService;
     private ListingStatusRepository listingStatusRepository;
     private List<ListingStatus> fetchedListingStatuses;
+    private ListingStatusAPIDAO listingStatusAPIDAO;
 
-    public ListingStatusService(HttpRequestService newHttpRequestService,
-                                ListingStatusRepository newListingStatusRepository) {
+    public ListingStatusService(ListingStatusRepository newListingStatusRepository,
+                                ListingStatusAPIDAO newListingStatusAPIDAO) {
 
-        this.setHttpRequestService(newHttpRequestService);
+        this.setListingStatusAPIDAO(newListingStatusAPIDAO);
         this.setListingStatusRepository(newListingStatusRepository);
     }
 
     public void fetchAndSaveData() {
-        String fetchListingStatusData = this.fetchListingStatusData();
+        String fetchListingStatusData = this.listingStatusAPIDAO.fetchData();
         this.setFetchedListingStatuses(this.getListingStatusListFromJson(fetchListingStatusData));
         this.saveListingStatusListElements(this.getFetchedListingStatuses());
-    }
-
-    public String fetchListingStatusData() {
-        return this.httpRequestService.sendGetRequest(LISTING_STATUS_ENDPOINT_URL);
     }
 
     public List<ListingStatus> getListingStatusListFromJson(String json) {
@@ -51,10 +46,6 @@ public class ListingStatusService {
                 .orElse(null);
     }
 
-    public void setHttpRequestService(HttpRequestService httpRequestService) {
-        this.httpRequestService = httpRequestService;
-    }
-
     public void setListingStatusRepository(ListingStatusRepository listingStatusRepository) {
         this.listingStatusRepository = listingStatusRepository;
     }
@@ -65,5 +56,9 @@ public class ListingStatusService {
 
     public List<ListingStatus> getFetchedListingStatuses() {
         return fetchedListingStatuses;
+    }
+
+    public void setListingStatusAPIDAO(ListingStatusAPIDAO listingStatusAPIDAO) {
+        this.listingStatusAPIDAO = listingStatusAPIDAO;
     }
 }

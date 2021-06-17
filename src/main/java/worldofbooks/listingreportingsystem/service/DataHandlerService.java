@@ -1,24 +1,29 @@
 package worldofbooks.listingreportingsystem.service;
 
+import worldofbooks.listingreportingsystem.dao.externalapi.ListingAPIDAO;
+import worldofbooks.listingreportingsystem.dao.externalapi.ListingStatusAPIDAO;
+import worldofbooks.listingreportingsystem.dao.externalapi.LocationAPIDAO;
+import worldofbooks.listingreportingsystem.dao.externalapi.MarketplaceAPIDTO;
 import worldofbooks.listingreportingsystem.dao.implementation.ListingDAODB;
 import worldofbooks.listingreportingsystem.dao.implementation.ListingStatusDAODB;
 import worldofbooks.listingreportingsystem.dao.implementation.LocationDAODB;
 import worldofbooks.listingreportingsystem.dao.implementation.MarketplaceDAODB;
 import worldofbooks.listingreportingsystem.service.validation.ListingValidationService;
+import worldofbooks.listingreportingsystem.util.HttpRequestUtil;
 
 import javax.persistence.EntityManager;
 
 public class DataHandlerService {
     private EntityManager entityManager;
-    private HttpRequestService httpRequestService;
+    private HttpRequestUtil httpRequestUtil;
     private ListingService listingService;
     private ListingStatusService listingStatusService;
     private LocationService locationService;
     private MarketplaceService marketplaceService;
     private ListingValidationService listingValidationService;
 
-    public DataHandlerService(HttpRequestService newHttpRequestService, EntityManager newEntityManager) {
-        this.setHttpRequestService(newHttpRequestService);
+    public DataHandlerService(HttpRequestUtil newHttpRequestUtil, EntityManager newEntityManager) {
+        this.setHttpRequestUtil(newHttpRequestUtil);
         this.setEntityManager(newEntityManager);
     }
 
@@ -28,20 +33,29 @@ public class DataHandlerService {
     }
 
     private void generateHelperServices() {
-        this.setMarketplaceService(new MarketplaceService(httpRequestService, new MarketplaceDAODB(entityManager)));
-        this.setLocationService(new LocationService(httpRequestService, new LocationDAODB(entityManager)));
-        this.setListingStatusService(new ListingStatusService(httpRequestService, new ListingStatusDAODB(entityManager)));
+        this.setMarketplaceService(new MarketplaceService(
+                new MarketplaceDAODB(entityManager),
+                new MarketplaceAPIDTO(httpRequestUtil)));
+
+        this.setLocationService(new LocationService(
+                new LocationDAODB(entityManager),
+                new LocationAPIDAO(httpRequestUtil)));
+
+        this.setListingStatusService(new ListingStatusService(
+                new ListingStatusDAODB(entityManager),
+                new ListingStatusAPIDAO(httpRequestUtil)));
+
         this.setListingValidationService(new ListingValidationService(this.marketplaceService,
                 this.locationService,
                 this.listingStatusService));
 
         this.setListingService(new ListingService(
-                httpRequestService,
                 new ListingDAODB(entityManager),
                 locationService,
                 listingStatusService,
                 marketplaceService,
-                listingValidationService));
+                listingValidationService,
+                new ListingAPIDAO(httpRequestUtil)));
     }
 
     private void startFetchAndSaveBySubServices() {
@@ -51,8 +65,8 @@ public class DataHandlerService {
         listingService.fetchAndSaveValidData();
     }
 
-    public void setHttpRequestService(HttpRequestService httpRequestService) {
-        this.httpRequestService = httpRequestService;
+    public void setHttpRequestUtil(HttpRequestUtil httpRequestUtil) {
+        this.httpRequestUtil = httpRequestUtil;
     }
 
     public void setEntityManager(EntityManager entityManager) {
