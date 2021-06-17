@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import worldofbooks.listingreportingsystem.dao.repository.ListingRepository;
 import worldofbooks.listingreportingsystem.model.dto.ListingIncomingDTO;
 import worldofbooks.listingreportingsystem.model.entity.Listing;
+import worldofbooks.listingreportingsystem.service.validation.ListingValidationService;
 import worldofbooks.listingreportingsystem.util.StringConverterUtil;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -21,23 +21,27 @@ public class ListingService {
     private LocationService locationService;
     private ListingStatusService listingStatusService;
     private MarketplaceService marketplaceService;
+    private ListingValidationService listingValidationService;
 
     public ListingService(HttpRequestService newHttpRequestService,
                           ListingRepository newListingRepository,
                           LocationService newLocationService,
                           ListingStatusService newListingStatusService,
-                          MarketplaceService newMarketplaceService) {
+                          MarketplaceService newMarketplaceService,
+                          ListingValidationService newListingValidationService) {
 
         this.setHttpRequestService(newHttpRequestService);
         this.setListingRepository(newListingRepository);
         this.setLocationService(newLocationService);
         this.setListingStatusService(newListingStatusService);
         this.setMarketplaceService(newMarketplaceService);
+        this.setListingValidationService(newListingValidationService);
     }
 
-    public void fetchAndSaveData() {
+    public void fetchAndSaveValidData() {
         String fetchedListingData = this.fetchListingData();
         this.setFetchedListings(this.getListingListFromJson(fetchedListingData));
+        this.setFetchedListings(this.listingValidationService.validateIncomingListings(this.fetchedListings));
         this.saveListingListElementsFromFetchedData();
     }
 
@@ -57,18 +61,18 @@ public class ListingService {
             newListing.setId(listingIncomingDTO.getId());
             newListing.setTitle(listingIncomingDTO.getTitle());
             newListing.setDescription(listingIncomingDTO.getDescription());
-            newListing.setListingPrice(BigDecimal.valueOf(listingIncomingDTO.getListing_price()));
+            newListing.setListingPrice(listingIncomingDTO.getListing_price());
             newListing.setCurrency(listingIncomingDTO.getCurrency());
-            newListing.setQuantity(listingIncomingDTO.getQuantity());
+            newListing.setQuantity(Integer.parseInt(listingIncomingDTO.getQuantity()));
             newListing.setOwnerEmailAddress(listingIncomingDTO.getOwner_email_address());
             newListing.setUploadTime(listingIncomingDTO.getUpload_time() != null ?
                     StringConverterUtil.tryFormatDateFromString(listingIncomingDTO.getUpload_time(), formatter) : null);
             newListing.setLocation(this.locationService
                     .getLocationByIdFromFetchedData(listingIncomingDTO.getLocation_id()));
             newListing.setListingStatus(this.listingStatusService
-                    .getListingStatusByIdFromFetchedData(listingIncomingDTO.getListing_status()));
+                    .getListingStatusByIdFromFetchedData(Integer.parseInt(listingIncomingDTO.getListing_status())));
             newListing.setMarketplace(this.marketplaceService
-                    .getMarketplaceByIdFromFetchedData(listingIncomingDTO.getMarketplace()));
+                    .getMarketplaceByIdFromFetchedData(Integer.parseInt(listingIncomingDTO.getMarketplace())));
 
             listingRepository.saveListing(newListing);
         }
@@ -96,5 +100,9 @@ public class ListingService {
 
     public void setMarketplaceService(MarketplaceService marketplaceService) {
         this.marketplaceService = marketplaceService;
+    }
+
+    public void setListingValidationService(ListingValidationService listingValidationService) {
+        this.listingValidationService = listingValidationService;
     }
 }

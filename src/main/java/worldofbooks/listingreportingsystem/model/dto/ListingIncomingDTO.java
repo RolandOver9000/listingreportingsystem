@@ -1,5 +1,6 @@
 package worldofbooks.listingreportingsystem.model.dto;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class ListingIncomingDTO {
@@ -7,14 +8,14 @@ public class ListingIncomingDTO {
     private UUID id;
     private String title;
     private String description;
-    private double listing_price;
+    private BigDecimal listing_price;
     private String currency;
-    private int quantity;
+    private String quantity;
     private String owner_email_address;
     private String upload_time;
     private UUID location_id;
-    private int listing_status;
-    private int marketplace;
+    private String listing_status;
+    private String marketplace;
 
     public UUID getId() {
         return id;
@@ -40,11 +41,11 @@ public class ListingIncomingDTO {
         this.description = description;
     }
 
-    public double getListing_price() {
+    public BigDecimal getListing_price() {
         return listing_price;
     }
 
-    public void setListing_price(double listing_price) {
+    public void setListing_price(BigDecimal listing_price) {
         this.listing_price = listing_price;
     }
 
@@ -56,11 +57,11 @@ public class ListingIncomingDTO {
         this.currency = currency;
     }
 
-    public int getQuantity() {
+    public String getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(String quantity) {
         this.quantity = quantity;
     }
 
@@ -88,22 +89,21 @@ public class ListingIncomingDTO {
         this.location_id = location_id;
     }
 
-    public int getListing_status() {
+    public String getListing_status() {
         return listing_status;
     }
 
-    public void setListing_status(int listing_status) {
+    public void setListing_status(String listing_status) {
         this.listing_status = listing_status;
     }
 
-    public int getMarketplace() {
+    public String getMarketplace() {
         return marketplace;
     }
 
-    public void setMarketplace(int marketplace) {
+    public void setMarketplace(String marketplace) {
         this.marketplace = marketplace;
     }
-
     @Override
     public String toString() {
         return "ListingIncomingDTO{" +

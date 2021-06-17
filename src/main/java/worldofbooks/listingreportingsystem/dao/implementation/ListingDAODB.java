@@ -17,7 +17,6 @@ public class ListingDAODB implements ListingRepository {
     public void saveListing(Listing newListing) {
         entityManager.getTransaction().begin();
         entityManager.persist(newListing);
-        System.out.println(entityManager.find(Listing.class, newListing.getId()).toString());
         entityManager.getTransaction().commit();
     }
 
