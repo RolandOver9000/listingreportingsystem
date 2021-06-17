@@ -1,6 +1,5 @@
 package worldofbooks.listingreportingsystem.service.validation;
 
-import org.apache.commons.validator.routines.EmailValidator;
 import worldofbooks.listingreportingsystem.model.dto.ListingIncomingDTO;
 import worldofbooks.listingreportingsystem.service.ListingStatusService;
 import worldofbooks.listingreportingsystem.service.LocationService;
