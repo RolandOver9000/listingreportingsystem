@@ -1,64 +1,42 @@
 package worldofbooks.listingreportingsystem.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import worldofbooks.listingreportingsystem.dao.externalapi.LocationAPIDAO;
-import worldofbooks.listingreportingsystem.dao.repository.LocationRepository;
+import worldofbooks.listingreportingsystem.dao.repository.database.LocationDbRepository;
+import worldofbooks.listingreportingsystem.dao.repository.externalapi.LocationApiRepository;
 import worldofbooks.listingreportingsystem.model.entity.Location;
-import worldofbooks.listingreportingsystem.util.StringConverterUtil;
 
 import java.util.List;
 import java.util.UUID;
 
 public class LocationService {
 
-    private LocationRepository locationRepository;
-    private List<Location> fetchedLocations;
-    private LocationAPIDAO locationAPIDAO;
+    private LocationDbRepository locationDbRepository;
+    private LocationApiRepository locationApiRepository;
 
-    public LocationService(LocationRepository newLocationRepository,
-                           LocationAPIDAO newLocationAPIDAO) {
-        this.setLocationAPIDAO(newLocationAPIDAO);
-        this.setLocationRepository(newLocationRepository);
+    public LocationService(LocationDbRepository newLocationDbRepository,
+                           LocationApiRepository newLocationApiRepository) {
+        this.locationDbRepository = newLocationDbRepository;
+        this.locationApiRepository = newLocationApiRepository;
     }
 
     public void fetchAndSaveData() {
-        String fetchedLocationData = this.locationAPIDAO.fetchData();
-        this.setFetchedLocations(this.getLocationListFromJson(fetchedLocationData));
-        this.saveLocationListElements(this.getFetchedLocations());
+        this.saveLocationListToDB(this.locationApiRepository.getAllLocations());
     }
 
-    public List<Location> getLocationListFromJson(String json) {
-        return StringConverterUtil.convertJsonStringToGivenType(
-                json,
-                new TypeReference<List<Location>>() {});
-    }
-
-    public void saveLocationListElements(List<Location> locations){
+    public void saveLocationListToDB(List<Location> locations){
         for(Location location : locations){
-            locationRepository.saveLocation(location);
+            locationDbRepository.saveLocation(location);
         }
     }
 
-    public Location getLocationByIdFromFetchedData(UUID searchedId) {
-        return fetchedLocations.stream()
-                .filter(location -> location.getId().equals(searchedId))
-                .findFirst()
-                .orElse(null);
+    public Location getLocationByIdFromAPI(UUID id) {
+        return this.locationApiRepository.getLocationById(id);
     }
 
-    public void setLocationRepository(LocationRepository locationRepository) {
-        this.locationRepository = locationRepository;
+    public void setLocationDbRepository(LocationDbRepository locationDbRepository) {
+        this.locationDbRepository = locationDbRepository;
     }
 
-    public void setFetchedLocations(List<Location> fetchedLocations) {
-        this.fetchedLocations = fetchedLocations;
-    }
-
-    public List<Location> getFetchedLocations() {
-        return fetchedLocations;
-    }
-
-    public void setLocationAPIDAO(LocationAPIDAO locationAPIDAO) {
-        this.locationAPIDAO = locationAPIDAO;
+    public void setLocationApiRepository(LocationApiRepository locationApiRepository) {
+        this.locationApiRepository = locationApiRepository;
     }
 }

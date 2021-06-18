@@ -12,9 +12,9 @@ import java.io.IOException;
 
 public class HttpRequestUtil {
 
-    private final CloseableHttpClient httpClient = HttpClients.createDefault();
+    private static final CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    public String sendGetRequest(String targetUrl) {
+    public static String sendGetRequest(String targetUrl) {
         HttpGet request = new HttpGet(targetUrl);
         System.out.println(request.toString());
 

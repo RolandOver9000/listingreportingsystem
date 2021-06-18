@@ -1,15 +1,15 @@
-package worldofbooks.listingreportingsystem.dao.implementation;
+package worldofbooks.listingreportingsystem.dao.implementation.database;
 
-import worldofbooks.listingreportingsystem.dao.repository.ListingRepository;
+import worldofbooks.listingreportingsystem.dao.repository.database.ListingDbRepository;
 import worldofbooks.listingreportingsystem.model.entity.Listing;
 
 import javax.persistence.EntityManager;
 
-public class ListingDAODB implements ListingRepository {
+public class ListingDaoDb implements ListingDbRepository {
 
     private EntityManager entityManager;
 
-    public ListingDAODB(EntityManager newEntityManager) {
+    public ListingDaoDb(EntityManager newEntityManager) {
         this.setEntityManager(newEntityManager);
     }
 

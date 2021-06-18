@@ -7,28 +7,26 @@ import worldofbooks.listingreportingsystem.service.MarketplaceService;
 import worldofbooks.listingreportingsystem.util.FileHandler;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
-public class ListingValidationService {
+public class IncomingListingValidationService {
 
+    private final MarketplaceService marketplaceService;
+    private final LocationService locationService;
+    private final ListingStatusService listingStatusService;
     private List<ListingIncomingDTO> validListings;
     private List<String> invalidListings;
     private List<String> invalidFields;
-    private MarketplaceService marketplaceService;
-    private LocationService locationService;
-    private ListingStatusService listingStatusService;
     private static final String EMAIL_REGEX =
             "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
 
-    public ListingValidationService(MarketplaceService newMarketplaceService,
-                                    LocationService newLocationService,
-                                    ListingStatusService newListingStatusService) {
-        this.setMarketplaceService(newMarketplaceService);
-        this.setLocationService(newLocationService);
-        this.setListingStatusService(newListingStatusService);
+    public IncomingListingValidationService(MarketplaceService newMarketplaceService,
+                                            LocationService newLocationService,
+                                            ListingStatusService newListingStatusService) {
+        this.marketplaceService = newMarketplaceService;
+        this.locationService = newLocationService;
+        this.listingStatusService = newListingStatusService;
     }
 
     public List<ListingIncomingDTO> getValidatedIncomingListings(List<ListingIncomingDTO> incomingListings) {
@@ -74,7 +72,7 @@ public class ListingValidationService {
                 .append(listing.getId())
                 .append(";")
                 .append(this.marketplaceService
-                        .getMarketplaceByIdFromFetchedData(Integer.parseInt(listing.getMarketplace()))
+                        .getMarketplaceByIdFromAPI(Integer.parseInt(listing.getMarketplace()))
                         .getMarketplaceName());
 
         for(String invalidField : this.invalidFields) {
@@ -102,14 +100,14 @@ public class ListingValidationService {
 
     private void checkMarketplace(String marketplace) {
         if(marketplace == null ||
-                this.marketplaceService.getMarketplaceByIdFromFetchedData(Integer.parseInt(marketplace)) == null) {
+                this.marketplaceService.getMarketplaceByIdFromAPI(Integer.parseInt(marketplace)) == null) {
             this.invalidFields.add("marketplace");
         }
     }
 
     private void checkListingStatus(String listingStatus) {
         if(listingStatus == null ||
-                this.listingStatusService.getListingStatusByIdFromFetchedData(Integer.parseInt(listingStatus)) == null){
+                this.listingStatusService.getListingStatusByIdFromAPI(Integer.parseInt(listingStatus)) == null){
             this.invalidFields.add("listing_status");
         }
     }
@@ -133,7 +131,7 @@ public class ListingValidationService {
     }
 
     private void checkLocationId(UUID id) {
-        if(id == null || this.locationService.getLocationByIdFromFetchedData(id) == null) {
+        if(id == null || this.locationService.getLocationByIdFromAPI(id) == null) {
             this.invalidFields.add("location_id");
         }
     }
@@ -154,17 +152,5 @@ public class ListingValidationService {
         if(id == null)  {
             this.invalidFields.add("id");
         }
-    }
-
-    public void setMarketplaceService(MarketplaceService marketplaceService) {
-        this.marketplaceService = marketplaceService;
-    }
-
-    public void setLocationService(LocationService locationService) {
-        this.locationService = locationService;
-    }
-
-    public void setListingStatusService(ListingStatusService listingStatusService) {
-        this.listingStatusService = listingStatusService;
     }
 }

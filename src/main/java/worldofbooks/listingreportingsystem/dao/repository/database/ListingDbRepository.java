@@ -1,7 +1,7 @@
-package worldofbooks.listingreportingsystem.dao.repository;
+package worldofbooks.listingreportingsystem.dao.repository.database;
 
 import worldofbooks.listingreportingsystem.model.entity.Listing;
 
-public interface ListingRepository {
+public interface ListingDbRepository {
     void saveListing(Listing newListing);
 }

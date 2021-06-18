@@ -1,16 +1,15 @@
-package worldofbooks.listingreportingsystem.dao.implementation;
+package worldofbooks.listingreportingsystem.dao.implementation.database;
 
-import worldofbooks.listingreportingsystem.dao.repository.MarketplaceRepository;
-import worldofbooks.listingreportingsystem.model.entity.ListingStatus;
+import worldofbooks.listingreportingsystem.dao.repository.database.MarketplaceDbRepository;
 import worldofbooks.listingreportingsystem.model.entity.Marketplace;
 
 import javax.persistence.EntityManager;
 
-public class MarketplaceDAODB implements MarketplaceRepository {
+public class MarketplaceDaoDb implements MarketplaceDbRepository {
 
     private EntityManager entityManager;
 
-    public MarketplaceDAODB(EntityManager entityManager) {
+    public MarketplaceDaoDb(EntityManager entityManager) {
         this.setEntityManager(entityManager);
     }
 
