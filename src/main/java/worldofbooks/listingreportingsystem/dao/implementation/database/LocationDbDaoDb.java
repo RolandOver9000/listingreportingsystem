@@ -1,15 +1,15 @@
-package worldofbooks.listingreportingsystem.dao.implementation;
+package worldofbooks.listingreportingsystem.dao.implementation.database;
 
-import worldofbooks.listingreportingsystem.dao.repository.LocationRepository;
+import worldofbooks.listingreportingsystem.dao.repository.database.LocationDbRepository;
 import worldofbooks.listingreportingsystem.model.entity.Location;
 
 import javax.persistence.EntityManager;
 
-public class LocationDAODB implements LocationRepository {
+public class LocationDbDaoDb implements LocationDbRepository {
 
     private EntityManager entityManager;
 
-    public LocationDAODB(EntityManager newEntityManager) {
+    public LocationDbDaoDb(EntityManager newEntityManager) {
         this.setEntityManager(newEntityManager);
     }
 

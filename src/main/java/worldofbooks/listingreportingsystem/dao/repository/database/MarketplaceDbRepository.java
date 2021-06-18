@@ -1,7 +1,7 @@
-package worldofbooks.listingreportingsystem.dao.repository;
+package worldofbooks.listingreportingsystem.dao.repository.database;
 
 import worldofbooks.listingreportingsystem.model.entity.Marketplace;
 
-public interface MarketplaceRepository {
+public interface MarketplaceDbRepository {
     void saveMarketplace(Marketplace newMarketplace);
 }

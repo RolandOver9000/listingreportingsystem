@@ -1,7 +1,7 @@
-package worldofbooks.listingreportingsystem.dao.repository;
+package worldofbooks.listingreportingsystem.dao.repository.database;
 
 import worldofbooks.listingreportingsystem.model.entity.Location;
 
-public interface LocationRepository {
+public interface LocationDbRepository {
     void saveLocation(Location newLocation);
 }
