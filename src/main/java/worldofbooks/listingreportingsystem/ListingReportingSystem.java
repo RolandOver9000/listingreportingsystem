@@ -11,8 +11,7 @@ public class ListingReportingSystem {
 
     public static void main(String[] args) {
         EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        HttpRequestUtil httpRequestUtil = new HttpRequestUtil();
-        DataHandlerService dataHandlerService = new DataHandlerService(httpRequestUtil, entityManager);
+        DataHandlerService dataHandlerService = new DataHandlerService(entityManager);
 
         dataHandlerService.fetchAndSaveData();
 
