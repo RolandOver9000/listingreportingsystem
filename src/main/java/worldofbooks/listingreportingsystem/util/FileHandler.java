@@ -6,13 +6,12 @@ import java.util.Date;
 import java.util.List;
 
 public class FileHandler {
-    private static final String LISTING_VALIDATION_LOG_FILE_PATH = "src/main/logs/";
 
-    public static void writeToListingValidationLogFile(List<String> logs) {
+    public static void generateListingLogCsvFileFromString_thenSaveToDirectory(List<String> logs, String directoryPath) {
         Date currentDate = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd_MM_yyyy__HH_mm");
         String fileName =  "listing_validation_log_" + formatter.format(currentDate) + ".csv";
-        File logFile = new File(LISTING_VALIDATION_LOG_FILE_PATH + fileName);
+        File logFile = new File(directoryPath + fileName);
 
         try (FileWriter fileWriter = new FileWriter(logFile);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
@@ -23,5 +22,22 @@ public class FileHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String generateJsonFileFromString_thenSaveFileToDirectory(String givenString, String directoryPath) {
+        Date currentDate = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd_MM_yyyy__HH_mm");
+        String fileName = "listing_report_" + formatter.format(currentDate) + ".json";
+
+        try (FileWriter file = new FileWriter(directoryPath + fileName)) {
+            //We can write any JSONArray or JSONObject instance to the file
+            file.write(givenString);
+            file.flush();
+
+            return fileName;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

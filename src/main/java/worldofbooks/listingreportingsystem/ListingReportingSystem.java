@@ -1,7 +1,6 @@
 package worldofbooks.listingreportingsystem;
 
 import worldofbooks.listingreportingsystem.service.*;
-import worldofbooks.listingreportingsystem.util.HttpRequestUtil;
 import worldofbooks.listingreportingsystem.util.JPAUtil;
 
 import javax.persistence.EntityManager;
@@ -14,6 +13,7 @@ public class ListingReportingSystem {
         DataHandlerService dataHandlerService = new DataHandlerService(entityManager);
 
         dataHandlerService.fetchAndSaveData();
+        dataHandlerService.handleListingReport();
 
         entityManager.close();
         JPAUtil.shutdown();

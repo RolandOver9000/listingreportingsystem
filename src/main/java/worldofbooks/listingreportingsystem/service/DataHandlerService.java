@@ -1,5 +1,6 @@
 package worldofbooks.listingreportingsystem.service;
 
+import org.apache.commons.net.ftp.FTPClient;
 import worldofbooks.listingreportingsystem.dao.implementation.externalapi.ListingDaoApi;
 import worldofbooks.listingreportingsystem.dao.implementation.externalapi.ListingStatusDaoApi;
 import worldofbooks.listingreportingsystem.dao.implementation.externalapi.LocationDaoApi;
@@ -8,6 +9,8 @@ import worldofbooks.listingreportingsystem.dao.implementation.database.ListingDa
 import worldofbooks.listingreportingsystem.dao.implementation.database.ListingStatusDaoDb;
 import worldofbooks.listingreportingsystem.dao.implementation.database.LocationDbDaoDb;
 import worldofbooks.listingreportingsystem.dao.implementation.database.MarketplaceDaoDb;
+import worldofbooks.listingreportingsystem.dao.implementation.ftp.ListingDaoFtp;
+import worldofbooks.listingreportingsystem.service.report.ListingReportService;
 import worldofbooks.listingreportingsystem.service.validation.IncomingListingValidationService;
 
 import javax.persistence.EntityManager;
@@ -19,17 +22,22 @@ public class DataHandlerService {
     private LocationService locationService;
     private MarketplaceService marketplaceService;
     private IncomingListingValidationService incomingListingValidationService;
+    private ListingReportService listingReportService;
 
     public DataHandlerService(EntityManager newEntityManager) {
         this.setEntityManager(newEntityManager);
     }
 
     public void fetchAndSaveData() {
-        this.generateHelperServices();
+        this.generateServices();
         this.startFetchAndSaveBySubServices();
     }
 
-    private void generateHelperServices() {
+    public void handleListingReport() {
+        this.listingReportService.generateListingReport_thenSaveToFile_thenUploadReportToFtpServer();
+    }
+
+    private void generateServices() {
         this.setMarketplaceService(new MarketplaceService(
                 new MarketplaceDaoDb(entityManager),
                 new MarketplaceDaoApi()));
@@ -53,6 +61,10 @@ public class DataHandlerService {
                 marketplaceService,
                 incomingListingValidationService,
                 new ListingDaoApi()));
+
+        this.listingReportService = new ListingReportService(
+                new ListingDaoDb(entityManager),
+                new ListingDaoFtp(new FTPClient()));
     }
 
     private void startFetchAndSaveBySubServices() {

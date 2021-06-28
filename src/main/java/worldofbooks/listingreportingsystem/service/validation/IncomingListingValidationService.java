@@ -20,6 +20,7 @@ public class IncomingListingValidationService {
     private List<String> invalidFields;
     private static final String EMAIL_REGEX =
             "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
+    private static final String LISTING_VALIDATION_LOG_FILE_PATH = "src/main/logs/";
 
     public IncomingListingValidationService(MarketplaceService newMarketplaceService,
                                             LocationService newLocationService,
@@ -51,6 +52,7 @@ public class IncomingListingValidationService {
             this.checkListingStatus(listing.getListing_status());
             this.checkMarketplace(listing.getMarketplace());
             this.checkOwnerEmailAddress(listing.getOwner_email_address());
+            this.checkUpdateTime(listing.getUpload_time());
 
             this.evaluateValidation(listing);
             this.invalidFields.clear();
@@ -83,9 +85,17 @@ public class IncomingListingValidationService {
         return formattedLogString.toString();
     }
 
-
     private void saveInvalidListingsToLogFile() {
-        FileHandler.writeToListingValidationLogFile(this.invalidListings);
+        FileHandler.generateListingLogCsvFileFromString_thenSaveToDirectory(
+                this.invalidListings,
+                LISTING_VALIDATION_LOG_FILE_PATH);
+    }
+
+
+    private void checkUpdateTime(String uploadTime) {
+        if(uploadTime == null) {
+            this.invalidFields.add("upload_time");
+        }
     }
 
     private void checkOwnerEmailAddress(String ownerEmailAddress) {
