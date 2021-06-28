@@ -51,6 +51,7 @@ public class IncomingListingValidationService {
             this.checkListingStatus(listing.getListing_status());
             this.checkMarketplace(listing.getMarketplace());
             this.checkOwnerEmailAddress(listing.getOwner_email_address());
+            this.checkUpdateTime(listing.getUpload_time());
 
             this.evaluateValidation(listing);
             this.invalidFields.clear();
@@ -86,6 +87,13 @@ public class IncomingListingValidationService {
 
     private void saveInvalidListingsToLogFile() {
         FileHandler.writeToListingValidationLogFile(this.invalidListings);
+    }
+
+
+    private void checkUpdateTime(String uploadTime) {
+        if(uploadTime == null) {
+            this.invalidFields.add("upload_time");
+        }
     }
 
     private void checkOwnerEmailAddress(String ownerEmailAddress) {
