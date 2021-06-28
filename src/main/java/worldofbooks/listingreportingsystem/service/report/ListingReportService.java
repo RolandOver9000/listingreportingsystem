@@ -17,6 +17,7 @@ public class ListingReportService {
     private ListingFtpRepository listingFtpRepository;
     private final static String EBAY_DB_MARKETPLACE_NAME = "EBAY";
     private final static String AMAZON_DB_MARKETPLACE_NAME = "AMAZON";
+    private static final String LISTING_REPORT_FILE_PATH = "src/main/reports/";
 
     public ListingReportService(ListingDbRepository newListingDbRepository,
                                 ListingFtpRepository newListingFtpRepository) {
@@ -28,16 +29,17 @@ public class ListingReportService {
         JSONObject generatedJsonReport = this.generateListingReport();
 
         String savedReportFileName = this.saveReportToFile(generatedJsonReport);
-        String getSavedReportPath = FileHandler.getListingReportFilePath();
         String targetFtpDirectory = "/reports";
         this.listingFtpRepository.uploadFile(
-                getSavedReportPath + savedReportFileName,
+                LISTING_REPORT_FILE_PATH + savedReportFileName,
                 savedReportFileName,
                 targetFtpDirectory);
     }
 
     private String saveReportToFile(JSONObject generatedJsonReport) {
-        return FileHandler.generateListingReportFromString(generatedJsonReport.toString(2));
+        return FileHandler.generateJsonFileFromString_thenSaveFileToDirectory(
+                generatedJsonReport.toString(2),
+                LISTING_REPORT_FILE_PATH);
     }
 
     private JSONObject generateListingReport() {
