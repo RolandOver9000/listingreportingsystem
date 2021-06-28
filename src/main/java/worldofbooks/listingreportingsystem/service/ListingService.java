@@ -7,7 +7,7 @@ import worldofbooks.listingreportingsystem.model.entity.Listing;
 import worldofbooks.listingreportingsystem.service.validation.IncomingListingValidationService;
 import worldofbooks.listingreportingsystem.util.StringConverterUtil;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ListingService {
@@ -18,7 +18,7 @@ public class ListingService {
     private final ListingStatusService listingStatusService;
     private final MarketplaceService marketplaceService;
     private final IncomingListingValidationService incomingListingValidationService;
-    private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
 
     public ListingService(ListingDbRepository newListingDbRepository,
                           LocationService newLocationService,
@@ -57,13 +57,16 @@ public class ListingService {
             newListing.setQuantity(Integer.parseInt(listingIncomingDTO.getQuantity()));
             newListing.setOwnerEmailAddress(listingIncomingDTO.getOwner_email_address());
             newListing.setUploadTime(listingIncomingDTO.getUpload_time() != null ?
-                    StringConverterUtil.tryFormatDateFromString(listingIncomingDTO.getUpload_time(), formatter) : null);
+                    StringConverterUtil
+                            .tryFormatDateFromString(listingIncomingDTO.getUpload_time(), formatter) : null);
             newListing.setLocation(this.locationService
                     .getLocationByIdFromAPI(listingIncomingDTO.getLocation_id()));
             newListing.setListingStatus(this.listingStatusService
                     .getListingStatusByIdFromAPI(Integer.parseInt(listingIncomingDTO.getListing_status())));
             newListing.setMarketplace(this.marketplaceService
                     .getMarketplaceByIdFromAPI(Integer.parseInt(listingIncomingDTO.getMarketplace())));
+            newListing.setMonth(newListing.getUploadTime().getMonthValue());
+            newListing.setYear(newListing.getUploadTime().getYear());
 
             this.saveListingToDB(newListing);
         }
