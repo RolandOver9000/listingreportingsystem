@@ -2,6 +2,7 @@ package worldofbooks.listingreportingsystem.model.entity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -29,8 +30,13 @@ public class Listing {
     @Column(columnDefinition = "TEXT")
     private String ownerEmailAddress;
 
-    @Temporal(TemporalType.DATE)
-    private Date uploadTime;
+    @Column(columnDefinition = "TEXT")
+    private int month;
+
+    @Column(columnDefinition = "TEXT")
+    private int year;
+
+    private LocalDate uploadTime;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     private Location location;
@@ -97,11 +103,11 @@ public class Listing {
         this.ownerEmailAddress = ownerEmailAddress;
     }
 
-    public Date getUploadTime() {
+    public LocalDate getUploadTime() {
         return uploadTime;
     }
 
-    public void setUploadTime(Date uploadTime) {
+    public void setUploadTime(LocalDate uploadTime) {
         this.uploadTime = uploadTime;
     }
 
@@ -129,20 +135,14 @@ public class Listing {
         this.marketplace = marketplace;
     }
 
-    @Override
-    public String toString() {
-        return "Listing{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", listingPrice=" + listingPrice +
-                ", currency='" + currency + '\'' +
-                ", quantity=" + quantity +
-                ", ownerEmailAddress='" + ownerEmailAddress + '\'' +
-                ", uploadTime=" + uploadTime +
-                ", location=" + location +
-                ", listingStatus=" + listingStatus +
-                ", marketplace=" + marketplace +
-                '}';
+    public void setMonth(int month) {
+        this.month = month;
     }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+
+
 }
