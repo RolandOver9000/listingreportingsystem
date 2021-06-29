@@ -2,10 +2,7 @@ package listingreportingsystem.dao.implementation.database;
 
 import mother.listing.ListingMother;
 import mother.marketplace.MarketplaceMother;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import worldofbooks.listingreportingsystem.dao.implementation.database.ListingDaoDb;
 import worldofbooks.listingreportingsystem.dao.implementation.database.MarketplaceDaoDb;
 import worldofbooks.listingreportingsystem.model.entity.Listing;
@@ -17,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 
-public class ListingDaoTest {
+public class ListingDaoDbTest {
 
     private static ListingDaoDb listingDaoDb;
     private static MarketplaceDaoDb marketplaceDaoDb;
