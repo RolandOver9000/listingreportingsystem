@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import worldofbooks.listingreportingsystem.dao.repository.database.ListingDbRepository;
 import worldofbooks.listingreportingsystem.dao.repository.ftp.ListingFtpRepository;
 import worldofbooks.listingreportingsystem.model.entity.Listing;
+import worldofbooks.listingreportingsystem.service.FtpService;
 import worldofbooks.listingreportingsystem.util.FileHandler;
 
 import java.math.BigDecimal;
@@ -14,15 +15,15 @@ import java.util.Map;
 
 public class ListingReportService {
     private ListingDbRepository listingDbRepository;
-    private ListingFtpRepository listingFtpRepository;
+    private FtpService ftpService;
     private final static String EBAY_DB_MARKETPLACE_NAME = "EBAY";
     private final static String AMAZON_DB_MARKETPLACE_NAME = "AMAZON";
     private static final String LISTING_REPORT_FILE_PATH = "src/main/reports/";
 
     public ListingReportService(ListingDbRepository newListingDbRepository,
-                                ListingFtpRepository newListingFtpRepository) {
+                                FtpService newFtpService) {
         this.listingDbRepository = newListingDbRepository;
-        this.listingFtpRepository = newListingFtpRepository;
+        this.ftpService = newFtpService;
     }
 
     public void generateListingReport_thenSaveToFile_thenUploadReportToFtpServer() {
@@ -30,7 +31,7 @@ public class ListingReportService {
 
         String savedReportFileName = this.saveReportToFile(generatedJsonReport);
         String targetFtpDirectory = "/reports";
-        this.listingFtpRepository.uploadFile(
+        this.ftpService.uploadFile(
                 LISTING_REPORT_FILE_PATH + savedReportFileName,
                 savedReportFileName,
                 targetFtpDirectory);

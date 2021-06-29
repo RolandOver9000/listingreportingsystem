@@ -1,9 +1,6 @@
 package worldofbooks.listingreportingsystem.service;
 
-import org.apache.commons.net.ftp.FTPClient;
 import worldofbooks.listingreportingsystem.dao.repository.ftp.ListingFtpRepository;
-
-import java.io.File;
 
 public class FtpService {
     private ListingFtpRepository listingFtpRepository;
