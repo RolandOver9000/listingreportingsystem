@@ -24,6 +24,7 @@ There were some parts that was not clear in the description of the assignment:
 - I do not know the scale and rounding of the calculations -- I use *scale: 2* and *Round down*<br><br>
 
 I also need some improvements on the other parts too like:
+- there is 2 plus columns in the listing table (year and month) because I had a problem with the *MONTH* and *YEAR* SQL functions, I will remove those columns later
 - common sql query usage
 - validation refactoring
 - making a config file instead of environment variables
