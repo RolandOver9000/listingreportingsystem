@@ -64,7 +64,8 @@ public class DataHandlerService {
 
         this.listingReportService = new ListingReportService(
                 new ListingDaoDb(entityManager),
-                new ListingDaoFtp(new FTPClient()));
+                new FtpService(
+                        new ListingDaoFtp(new FTPClient())));
     }
 
     private void startFetchAndSaveBySubServices() {
