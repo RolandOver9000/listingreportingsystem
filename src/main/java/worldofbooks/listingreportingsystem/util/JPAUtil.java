@@ -4,7 +4,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class JPAUtil {
-    private static final String PERSISTENCE_UNIT_NAME = "ListingReportingSystem";
+    private static final String PERSISTENCE_UNIT_NAME = System.getenv("PERSISTENCE_UNIT_NAME");
     private static EntityManagerFactory factory;
 
     public static EntityManagerFactory getEntityManagerFactory() {
