@@ -6,6 +6,7 @@ import worldofbooks.listingreportingsystem.model.entity.Listing;
 import javax.persistence.*;
 import javax.persistence.criteria.*;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -118,6 +119,34 @@ public class ListingDaoDb implements ListingDbRepository {
             resultMap = query.getResultStream().collect(Collectors.toMap(
                     singleResult -> (singleResult.get(0).toString() + "-" + singleResult.get(1).toString()),
                     singleResult -> (singleResult.get(2).toString())
+            ));
+            return resultMap;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Map<String, String> getBestListingEmailAddressPerMonth() {
+        Map<String, String> resultMap;
+        try {
+            String sql = "SELECT owneremailaddress, EXTRACT(YEAR FROM uploadtime) as year, " +
+                    "EXTRACT(MONTH FROM uploadtime) as month, " +
+                    "CAST(listingprice*quantity AS varchar) FROM listing " +
+                    "INNER JOIN (SELECT CONCAT(EXTRACT(YEAR FROM uploadtime), " +
+                    "EXTRACT(MONTH FROM uploadtime), (MAX(listingprice*quantity))) as result FROM listing " +
+                    "GROUP BY EXTRACT(YEAR FROM uploadtime), EXTRACT(MONTH FROM uploadtime)) joinedListing " +
+                    "ON joinedListing.result = CONCAT(EXTRACT(YEAR FROM uploadtime), " +
+                    "CONCAT(EXTRACT(MONTH FROM uploadtime), CAST(listingprice*quantity AS varchar)))";
+
+            List<Tuple> query = entityManager
+                    .createNativeQuery(sql, Tuple.class).getResultList();
+            resultMap = query.stream().collect(Collectors.toMap(
+                    singleResult -> ((int)Double.parseDouble(singleResult.get(1).toString()) + "-" +
+                            (int)Double.parseDouble(singleResult.get(2).toString())),
+                    singleResult -> (singleResult.get(0).toString()),
+                    (singleResult1, singleResult2) -> singleResult1
             ));
             return resultMap;
         } catch (Exception e) {

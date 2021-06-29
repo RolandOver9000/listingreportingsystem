@@ -97,6 +97,9 @@ public class ListingReportService {
                         monthlyReports.get("Total Amazon listing count per month"),
                         monthlyReports.get("Total Amazon listing price per month")));
 
+        monthlyReports.put("Best lister email address of the month",
+                this.listingDbRepository.getBestListingEmailAddressPerMonth());
+
         JSONObject jsonReports = this.generateJSONObjectFromMap(reports);
         JSONObject jsonMonthlyReports = this.generateJSONObjectFromMap(monthlyReports);
         jsonReports.append("Monthly reports", jsonMonthlyReports);

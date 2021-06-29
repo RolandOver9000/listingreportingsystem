@@ -15,5 +15,5 @@ public interface ListingDbRepository {
     Listing getBestListing();
     Map<String, String> getListingCountByMarketplaceNamePerMonth(String marketplaceName);
     Map<String, String> getTotalListingPriceByMarketplaceNamePerMonth(String marketplaceName);
-
+    Map<String, String> getBestListingEmailAddressPerMonth();
 }
