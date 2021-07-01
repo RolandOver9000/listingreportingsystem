@@ -2,8 +2,6 @@ package worldofbooks.listingreportingsystem.service.report;
 
 import org.json.JSONObject;
 import worldofbooks.listingreportingsystem.dao.repository.database.ListingDbRepository;
-import worldofbooks.listingreportingsystem.dao.repository.ftp.ListingFtpRepository;
-import worldofbooks.listingreportingsystem.model.entity.Listing;
 import worldofbooks.listingreportingsystem.service.FtpService;
 import worldofbooks.listingreportingsystem.util.FileHandler;
 
@@ -70,12 +68,10 @@ public class ListingReportService {
                         reports.get("Total Amazon listing count"),
                         reports.get("Total Amazon listing price")));
 
-        //I do not know who counts as "best lister", so I use the listing_price * quantity formula to decide it.
-        reports.put("Best lister email address", this.getBestListingOwnerEmail().getOwnerEmailAddress());
+        reports.put("Best lister email address", this.getBestListingOwnerEmail());
         monthlyReports.put("Total eBay listing count per month",
                 this.listingDbRepository.getListingCountByMarketplaceNamePerMonth(EBAY_DB_MARKETPLACE_NAME));
 
-        //I am not sure if I should return listingPrice sum, or sum of (listingPrice * quantity) I did listingPrice sum.
         monthlyReports.put("Total eBay listing price per month",
                 this.listingDbRepository.getTotalListingPriceByMarketplaceNamePerMonth(EBAY_DB_MARKETPLACE_NAME));
 
@@ -88,7 +84,6 @@ public class ListingReportService {
         monthlyReports.put("Total Amazon listing count per month",
                 this.listingDbRepository.getListingCountByMarketplaceNamePerMonth(AMAZON_DB_MARKETPLACE_NAME));
 
-        //I am not sure if I should return listingPrice sum, or sum of (listingPrice * quantity) I did listingPrice sum.
         monthlyReports.put("Total Amazon listing price per month",
                 this.listingDbRepository.getTotalListingPriceByMarketplaceNamePerMonth(AMAZON_DB_MARKETPLACE_NAME));
 
@@ -123,11 +118,10 @@ public class ListingReportService {
         return resultMap;
     }
 
-    private Listing getBestListingOwnerEmail() {
-        return this.listingDbRepository.getBestListing();
+    private String getBestListingOwnerEmail() {
+        return this.listingDbRepository.getBestListingOwnerEmailAddress();
     }
 
-    //RoundingMode and scale is not specified, I chose to use DOWN.
     private String countAverageValue(String totalCount, String sum) {
         return new BigDecimal(sum).divide(new BigDecimal(totalCount), 2, RoundingMode.DOWN).toString();
     }

@@ -107,7 +107,7 @@ public class ListingDaoDbTest {
         listingDaoDb.saveListing(testListing);
         listingDaoDb.saveListing(testListing2);
 
-        assertEquals(testListing2,
-                listingDaoDb.getBestListing());
+        assertEquals(testListing2.getOwnerEmailAddress(),
+                listingDaoDb.getBestListingOwnerEmailAddress());
     }
 }

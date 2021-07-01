@@ -63,21 +63,19 @@ public class ListingDaoDb implements ListingDbRepository {
     }
 
     @Override
-    public Listing getBestListing() {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Listing> criteriaQuery = criteriaBuilder.createQuery(Listing.class);
-        Root<Listing> rootListing = criteriaQuery.from(Listing.class);
+    public String getBestListingOwnerEmailAddress() {
         try {
-            criteriaQuery.select(rootListing);
-            criteriaQuery.orderBy(criteriaBuilder.desc(
-                    criteriaBuilder.prod(rootListing.get("listingPrice"), rootListing.get("quantity"))));
-            TypedQuery<Listing> listing = entityManager.createQuery(criteriaQuery).setMaxResults(1);
-            return listing.getSingleResult();
+            String sql = "SELECT owneremailaddress FROM listing " +
+                    "ORDER BY (listingprice*quantity) DESC " +
+                    "LIMIT 1";
+            Query query = entityManager.createNativeQuery(sql);
+            return query.getSingleResult().toString();
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
         return null;
     }
+
 
     @Override
     public Map<String, String> getListingCountByMarketplaceNamePerMonth(String marketplaceName) {
@@ -140,8 +138,7 @@ public class ListingDaoDb implements ListingDbRepository {
                     "ON joinedListing.result = CONCAT(EXTRACT(YEAR FROM uploadtime), " +
                     "CONCAT(EXTRACT(MONTH FROM uploadtime), CAST(listingprice*quantity AS varchar)))";
 
-            List<Tuple> query = entityManager
-                    .createNativeQuery(sql, Tuple.class).getResultList();
+            List<Tuple> query = entityManager.createNativeQuery(sql, Tuple.class).getResultList();
             resultMap = query.stream().collect(Collectors.toMap(
                     singleResult -> ((int)Double.parseDouble(singleResult.get(1).toString()) + "-" +
                             (int)Double.parseDouble(singleResult.get(2).toString())),
