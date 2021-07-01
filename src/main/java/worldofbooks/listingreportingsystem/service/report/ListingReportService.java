@@ -108,6 +108,7 @@ public class ListingReportService {
 
     private Map<String, String> getAverageListingPricePerMonthFromJsonString(Map<String, String> count, Map<String, String> sum) {
         Map<String, String> resultMap = new HashMap<>();
+        System.out.println(count);
 
         for (Map.Entry<String, String> sumMapElement : sum.entrySet()) {
             BigDecimal sumValue = new BigDecimal(sumMapElement.getValue());
