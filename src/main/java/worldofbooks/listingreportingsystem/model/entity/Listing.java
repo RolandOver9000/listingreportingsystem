@@ -30,12 +30,6 @@ public class Listing {
     @Column(columnDefinition = "TEXT")
     private String ownerEmailAddress;
 
-    @Column(columnDefinition = "TEXT")
-    private int month;
-
-    @Column(columnDefinition = "TEXT")
-    private int year;
-
     private LocalDate uploadTime;
 
     @ManyToOne(cascade = {CascadeType.ALL})
@@ -134,15 +128,5 @@ public class Listing {
     public void setMarketplace(Marketplace marketplace) {
         this.marketplace = marketplace;
     }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-
 
 }

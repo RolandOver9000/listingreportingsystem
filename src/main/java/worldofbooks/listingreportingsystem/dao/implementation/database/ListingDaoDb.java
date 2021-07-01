@@ -63,38 +63,37 @@ public class ListingDaoDb implements ListingDbRepository {
     }
 
     @Override
-    public Listing getBestListing() {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Listing> criteriaQuery = criteriaBuilder.createQuery(Listing.class);
-        Root<Listing> rootListing = criteriaQuery.from(Listing.class);
+    public String getBestListingOwnerEmailAddress() {
         try {
-            criteriaQuery.select(rootListing);
-            criteriaQuery.orderBy(criteriaBuilder.desc(
-                    criteriaBuilder.prod(rootListing.get("listingPrice"), rootListing.get("quantity"))));
-            TypedQuery<Listing> listing = entityManager.createQuery(criteriaQuery).setMaxResults(1);
-            return listing.getSingleResult();
+            String sql = "SELECT owneremailaddress FROM listing " +
+                    "ORDER BY (listingprice*quantity) DESC " +
+                    "LIMIT 1";
+            Query query = entityManager.createNativeQuery(sql);
+            return query.getSingleResult().toString();
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+
     @Override
     public Map<String, String> getListingCountByMarketplaceNamePerMonth(String marketplaceName) {
         Map<String, String> resultMap;
         try {
-            String sql = "SELECT listing.year, listing.month, COUNT(listing.id) FROM Listing listing " +
-                    "WHERE listing.marketplace.id = " +
-                    "(SELECT (marketplace.id) FROM Marketplace marketplace " +
-                    "WHERE marketplace.marketplaceName = :marketplaceName) " +
-                    "GROUP BY listing.year, listing.month";
+            String sql = "SELECT EXTRACT(YEAR FROM uploadtime) as year, EXTRACT(MONTH FROM uploadtime) as month, COUNT(id) " +
+                    "FROM listing " +
+                    "WHERE marketplace_id = (SELECT id FROM marketplace WHERE marketplacename=:marketplaceName) " +
+                    "GROUP BY EXTRACT(YEAR FROM uploadtime), EXTRACT(MONTH FROM uploadtime)";
 
-            TypedQuery<Tuple> query = entityManager
-                    .createQuery(sql, Tuple.class)
-                    .setParameter("marketplaceName", marketplaceName);
-            resultMap = query.getResultStream().collect(Collectors.toMap(
-                    singleResult -> (singleResult.get(0).toString() + "-" + singleResult.get(1).toString()),
-                    singleResult -> (singleResult.get(2).toString())
+            List<Tuple> query = entityManager.createNativeQuery(sql, Tuple.class)
+                    .setParameter("marketplaceName", marketplaceName)
+                    .getResultList();
+            resultMap = query.stream().collect(Collectors.toMap(
+                    singleResult -> ((int)Double.parseDouble(singleResult.get(0).toString()) + "-" +
+                            (int)Double.parseDouble(singleResult.get(1).toString())),
+                    singleResult -> (singleResult.get(2).toString()),
+                    (singleResult1, singleResult2) -> singleResult1
             ));
             return resultMap;
         } catch (Exception e) {
@@ -107,18 +106,21 @@ public class ListingDaoDb implements ListingDbRepository {
     public Map<String, String> getTotalListingPriceByMarketplaceNamePerMonth(String marketplaceName) {
         Map<String, String> resultMap;
         try {
-            String sql = "SELECT listing.year, listing.month, SUM(listing.listingPrice) FROM Listing listing " +
-                    "WHERE listing.marketplace.id = " +
-                    "(SELECT (marketplace.id) FROM Marketplace marketplace " +
-                    "WHERE marketplace.marketplaceName = :marketplaceName) " +
-                    "GROUP BY listing.year, listing.month";
+            String sql = "SELECT EXTRACT(YEAR FROM uploadtime) as year, " +
+                    "EXTRACT(MONTH FROM uploadtime) as month, " +
+                    "SUM(listingprice) " +
+                    "FROM listing " +
+                    "WHERE marketplace_id = (SELECT id FROM marketplace WHERE marketplacename=:marketplaceName) " +
+                    "GROUP BY EXTRACT(YEAR FROM uploadtime), EXTRACT(MONTH FROM uploadtime)";
 
-            TypedQuery<Tuple> query = entityManager
-                    .createQuery(sql, Tuple.class)
-                    .setParameter("marketplaceName", marketplaceName);
-            resultMap = query.getResultStream().collect(Collectors.toMap(
-                    singleResult -> (singleResult.get(0).toString() + "-" + singleResult.get(1).toString()),
-                    singleResult -> (singleResult.get(2).toString())
+            List<Tuple> query = entityManager.createNativeQuery(sql, Tuple.class)
+                    .setParameter("marketplaceName", marketplaceName)
+                    .getResultList();
+            resultMap = query.stream().collect(Collectors.toMap(
+                    singleResult -> ((int)Double.parseDouble(singleResult.get(0).toString()) + "-" +
+                            (int)Double.parseDouble(singleResult.get(1).toString())),
+                    singleResult -> (singleResult.get(2).toString()),
+                    (singleResult1, singleResult2) -> singleResult1
             ));
             return resultMap;
         } catch (Exception e) {
@@ -140,8 +142,7 @@ public class ListingDaoDb implements ListingDbRepository {
                     "ON joinedListing.result = CONCAT(EXTRACT(YEAR FROM uploadtime), " +
                     "CONCAT(EXTRACT(MONTH FROM uploadtime), CAST(listingprice*quantity AS varchar)))";
 
-            List<Tuple> query = entityManager
-                    .createNativeQuery(sql, Tuple.class).getResultList();
+            List<Tuple> query = entityManager.createNativeQuery(sql, Tuple.class).getResultList();
             resultMap = query.stream().collect(Collectors.toMap(
                     singleResult -> ((int)Double.parseDouble(singleResult.get(1).toString()) + "-" +
                             (int)Double.parseDouble(singleResult.get(2).toString())),

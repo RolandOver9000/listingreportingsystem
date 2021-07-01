@@ -65,8 +65,6 @@ public class ListingService {
                     .getListingStatusByIdFromAPI(Integer.parseInt(listingIncomingDTO.getListing_status())));
             newListing.setMarketplace(this.marketplaceService
                     .getMarketplaceByIdFromAPI(Integer.parseInt(listingIncomingDTO.getMarketplace())));
-            newListing.setMonth(newListing.getUploadTime().getMonthValue());
-            newListing.setYear(newListing.getUploadTime().getYear());
 
             this.saveListingToDB(newListing);
         }

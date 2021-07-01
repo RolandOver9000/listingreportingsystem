@@ -12,7 +12,7 @@ public interface ListingDbRepository {
     long getListingCount();
     long getListingCountByMarketplaceName(String marketplaceName);
     BigDecimal getTotalListingPriceByMarketplaceName(String marketplaceName);
-    Listing getBestListing();
+    String getBestListingOwnerEmailAddress();
     Map<String, String> getListingCountByMarketplaceNamePerMonth(String marketplaceName);
     Map<String, String> getTotalListingPriceByMarketplaceNamePerMonth(String marketplaceName);
     Map<String, String> getBestListingEmailAddressPerMonth();
