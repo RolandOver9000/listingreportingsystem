@@ -33,8 +33,10 @@ I also need some improvements on the other parts too like:
 - more tests <br><br>
 
 Used technologies:
+- Apache Maven 3.6
+- H2
 - Java 1.8
 - JPA + Hibernate
-- PostgreSQL (I still did not test if it works with other databases.)
+- PostgreSQL
 - JUnit5
 - Mockito
